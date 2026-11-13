@@ -1,6 +1,7 @@
+import { Suspense } from "react";
 import { TrackClient } from "./TrackClient";
 
-export default async function TrackPage({
+async function TrackContent({
   params,
   }: {
     params: Promise<{ code: string }>;
@@ -8,3 +9,15 @@ export default async function TrackPage({
       const { code } = await params;
         return <TrackClient code={code} />;
         }
+
+        export default function TrackPage({
+          params,
+          }: {
+            params: Promise<{ code: string }>;
+            }) {
+              return (
+                  <Suspense fallback={null}>
+                        <TrackContent params={params} />
+                            </Suspense>
+                              );
+                              }
