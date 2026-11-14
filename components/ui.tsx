@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "../lib/supabase";
 import { useSettings } from "../lib/SettingsProvider";
 
@@ -25,6 +25,7 @@ export const ADMIN_LINKS: NavLink[] = [
   { href: "/admin", label: "الوسطاء" },
   { href: "/admin/subscriptions", label: "الاشتراكات" },
   { href: "/admin/settings", label: "الإعدادات" },
+    { href: "/admin/pages", label: "الصفحات" },
 ];
 
 const PUBLIC_LINKS: NavLink[] = [
@@ -92,9 +93,29 @@ export function SiteHeader({
 
 export function SiteFooter() {
   const { settings } = useSettings();
+  const [pages, setPages] = useState<{ slug: string; title: string }[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("pages")
+      .select("slug,title")
+      .eq("is_published", true)
+      .order("sort_order")
+      .then(({ data }) => setPages(data ?? []));
+  }, []);
+
   return (
     <footer className="bg-[#0b0614] border-t border-white/10 py-8 text-center text-xs text-gray-400 px-4">
-      <p className="font-extrabold text-white text-base mb-1">{settings.site_name}</p>
+      <p className="font-extrabold text-white text-base mb-2">{settings.site_name}</p>
+      {pages.length > 0 && (
+        <nav className="mb-3 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
+          {pages.map((p) => (
+            <a key={p.slug} href={`/p/${p.slug}`} className="text-gray-300 hover:text-white">
+              {p.title}
+            </a>
+          ))}
+        </nav>
+      )}
       <p>{settings.footer_text}</p>
     </footer>
   );
