@@ -2,15 +2,16 @@
 
 import { useState, type ReactNode } from "react";
 import { supabase } from "../lib/supabase";
+import { useSettings } from "../lib/SettingsProvider";
 
 export const inputClass =
-  "w-full border border-gray-200 bg-gray-50 rounded-xl p-3.5 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:bg-white transition";
+  "focus-ring w-full border border-gray-200 bg-gray-50 rounded-xl p-3.5 text-gray-900 placeholder:text-gray-400 focus:bg-white transition";
 
 export const primaryBtn =
-  "glow-btn w-full bg-gradient-to-l from-rose-500 via-fuchsia-600 to-violet-600 text-white font-bold rounded-xl p-3.5 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 transition";
+  "glow-btn grad-bg w-full text-white font-bold rounded-xl p-3.5 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 transition";
 
 export const fileClass =
-  "block w-full text-sm text-gray-600 file:me-3 file:rounded-lg file:border-0 file:bg-fuchsia-50 file:px-4 file:py-2 file:font-semibold file:text-fuchsia-700";
+  "block w-full text-sm text-gray-600 file:me-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:font-semibold file:text-gray-700";
 
 export type NavLink = { href: string; label: string; cta?: boolean };
 
@@ -23,6 +24,7 @@ export const BROKER_LINKS: NavLink[] = [
 export const ADMIN_LINKS: NavLink[] = [
   { href: "/admin", label: "الوسطاء" },
   { href: "/admin/subscriptions", label: "الاشتراكات" },
+  { href: "/admin/settings", label: "الإعدادات" },
 ];
 
 const PUBLIC_LINKS: NavLink[] = [
@@ -47,20 +49,26 @@ export function SiteHeader({
   links?: NavLink[];
   onSignOut?: () => void;
 }) {
+  const { settings } = useSettings();
   return (
     <header className="sticky top-0 z-30 bg-[#0b0614]/85 backdrop-blur-xl border-b border-white/10">
+      {settings.announcement && (
+        <div className="grad-bg text-white text-xs font-semibold text-center py-1.5 px-3">
+          {settings.announcement}
+        </div>
+      )}
       <div className="max-w-3xl mx-auto flex items-center justify-between gap-3 px-4 h-16">
         <a href="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 via-fuchsia-600 to-violet-600 text-white font-extrabold flex items-center justify-center glow-btn">
-            ه
+          <div className="grad-bg-br glow-btn w-9 h-9 rounded-xl text-white font-extrabold flex items-center justify-center">
+            {settings.logo_letter}
           </div>
-          <span className="font-extrabold text-xl text-white">هاتلي</span>
+          <span className="font-extrabold text-xl text-white">{settings.site_name}</span>
         </a>
         <nav className="flex items-center gap-3 text-sm overflow-x-auto">
           {links.map((l) =>
             l.cta ? (
               <a key={l.href} href={l.href}
-                className="font-bold text-white bg-gradient-to-l from-rose-500 to-fuchsia-600 rounded-full px-4 py-2 hover:brightness-110 active:scale-95 transition whitespace-nowrap">
+                className="grad-bg font-bold text-white rounded-full px-4 py-2 hover:brightness-110 active:scale-95 transition whitespace-nowrap">
                 {l.label}
               </a>
             ) : (
@@ -83,10 +91,11 @@ export function SiteHeader({
 }
 
 export function SiteFooter() {
+  const { settings } = useSettings();
   return (
-    <footer className="bg-[#0b0614] border-t border-white/10 py-8 text-center text-xs text-gray-400">
-      <p className="font-extrabold text-white text-base mb-1">هاتلي</p>
-      <p>منصة وسيطة تربطك بوسطاء موثقين. هاتلي ليست تابعة لشي إن.</p>
+    <footer className="bg-[#0b0614] border-t border-white/10 py-8 text-center text-xs text-gray-400 px-4">
+      <p className="font-extrabold text-white text-base mb-1">{settings.site_name}</p>
+      <p>{settings.footer_text}</p>
     </footer>
   );
 }
@@ -107,10 +116,10 @@ export function PageShell({
       <SiteHeader links={links} onSignOut={onSignOut} />
 
       <div className="relative overflow-hidden bg-[#0b0614] px-4 pt-8 pb-20">
-        <div className="absolute -top-24 -start-16 w-72 h-72 rounded-full bg-fuchsia-600/30 blur-3xl" />
-        <div className="absolute -top-16 -end-20 w-64 h-64 rounded-full bg-violet-600/30 blur-3xl" />
+        <div className="blob absolute -top-24 -start-16 w-72 h-72 rounded-full blur-3xl" />
+        <div className="blob-alt absolute -top-16 -end-20 w-64 h-64 rounded-full blur-3xl" />
         {title && (
-          <div className={`relative mx-auto fade-up ${width === "max-w-3xl" ? "max-w-3xl" : width}`}>
+          <div className={`relative mx-auto fade-up ${width}`}>
             <h1 className="text-2xl font-extrabold text-white">{title}</h1>
             {subtitle && <p className="text-sm text-gray-400 mt-1">{subtitle}</p>}
           </div>
@@ -127,7 +136,7 @@ export function PageShell({
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`bg-white rounded-2xl shadow-lg shadow-fuchsia-950/5 border border-gray-100 p-4 ${className}`}>
+    <div className={`bg-white rounded-2xl shadow-lg shadow-gray-900/5 border border-gray-100 p-4 ${className}`}>
       {children}
     </div>
   );
@@ -161,7 +170,8 @@ export function Notice({
 export function Loading() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0b0614]">
-      <div className="w-10 h-10 border-4 border-fuchsia-900 border-t-fuchsia-500 rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-white/10 rounded-full animate-spin"
+        style={{ borderTopColor: "var(--c2)" }} />
     </div>
   );
 }
@@ -183,9 +193,9 @@ export function LoginCard({ title, subtitle }: { title: string; subtitle?: strin
 
   return (
     <form onSubmit={handleLogin}
-      className="bg-white rounded-3xl shadow-2xl shadow-fuchsia-950/20 p-6 space-y-4">
+      className="bg-white rounded-3xl shadow-2xl shadow-gray-900/20 p-6 space-y-4">
       <div className="text-center space-y-1">
-        <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-rose-500 via-fuchsia-600 to-violet-600 text-white flex items-center justify-center glow-btn">
+        <div className="grad-bg-br glow-btn w-14 h-14 mx-auto rounded-2xl text-white flex items-center justify-center">
           <ShieldIcon className="w-7 h-7" />
         </div>
         <h1 className="text-xl font-extrabold text-gray-900 pt-2">{title}</h1>

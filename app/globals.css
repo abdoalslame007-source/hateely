@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+:root {
+  --c1: #f43f5e;
+  --c2: #c026d3;
+  --c3: #7c3aed;
+}
+
 body {
   font-family: var(--font-cairo), system-ui, sans-serif;
   background: #fafafa;
@@ -20,13 +26,30 @@ body {
 .fade-up-2 { animation: fadeUp 0.7s ease 0.15s both; }
 .fade-up-3 { animation: fadeUp 0.7s ease 0.3s both; }
 
+/* ألوان الثيم (تتغير من لوحة الأدمن) */
+.grad-bg { background-image: linear-gradient(to left, var(--c1), var(--c2), var(--c3)); }
+.grad-bg-br { background-image: linear-gradient(to bottom right, var(--c1), var(--c2), var(--c3)); }
 .text-gradient {
-  background: linear-gradient(90deg, #ff4d8d, #d946ef, #8b5cf6);
+  background-image: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
-.glow-btn { box-shadow: 0 10px 34px -8px rgba(217, 70, 239, 0.6); }
+.glow-btn { box-shadow: 0 10px 34px -8px color-mix(in srgb, var(--c2) 60%, transparent); }
+.blob { background: var(--c2); opacity: 0.3; }
+.blob-alt { background: var(--c3); opacity: 0.3; }
+.blob-warm { background: var(--c1); opacity: 0.2; }
+.focus-ring:focus { outline: none; box-shadow: 0 0 0 2px var(--c2); }
+.accent-light { color: color-mix(in srgb, var(--c2) 55%, white); }
+.badge-accent {
+  background: color-mix(in srgb, var(--c2) 22%, transparent);
+  color: color-mix(in srgb, var(--c2) 45%, white);
+}
+.sel-card {
+  border-color: var(--c2);
+  background: color-mix(in srgb, var(--c2) 12%, transparent);
+}
+
 .glass {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
