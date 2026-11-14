@@ -2,6 +2,33 @@
 
 body {
   font-family: var(--font-cairo), system-ui, sans-serif;
-    background: #fafafa;
-      color: #111827;
-      }
+  background: #fafafa;
+  color: #111827;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+.animate-float { animation: float 7s ease-in-out infinite; }
+.fade-up { animation: fadeUp 0.7s ease both; }
+.fade-up-2 { animation: fadeUp 0.7s ease 0.15s both; }
+.fade-up-3 { animation: fadeUp 0.7s ease 0.3s both; }
+
+.text-gradient {
+  background: linear-gradient(90deg, #ff4d8d, #d946ef, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.glow-btn { box-shadow: 0 10px 34px -8px rgba(217, 70, 239, 0.6); }
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px);
+}
